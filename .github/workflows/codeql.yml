@@ -12,6 +12,7 @@
 name: "CodeQL"
 
 on:
+  workflow_call:
   push:
     branches: [ "main" ]
   pull_request:
@@ -21,7 +22,19 @@ on:
     - cron: '22 20 * * 5'
 
 jobs:
+  languages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: austenstone/list-repository-languages@main
+        id: list-languages
+        with:
+          codeql: 'true'
+    outputs:
+      languages: ${{ steps.list-languages.outputs.languages }}
+
   analyze:
+    if: "!contains(needs.languages.outputs.languages, '[]')"
+    needs: [languages]
     name: Analyze
     runs-on: ubuntu-latest
     permissions:
@@ -32,7 +45,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        language: ${{ fromJSON(needs.languages.outputs.languages) }}
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Use only 'java' to analyze code written in Java, Kotlin or both
         # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
