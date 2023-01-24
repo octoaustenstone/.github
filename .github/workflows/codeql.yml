@@ -22,6 +22,16 @@ on:
     - cron: '22 20 * * 5'
 
 jobs:
+  languages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: austenstone/list-repository-languages@main
+        id: list-languages
+        with:
+          codeql: 'true'
+    outputs:
+      languages: ${{ steps.list-languages.outputs.languages }}
+
   analyze:
     if: "!contains(needs.languages.outputs.languages, '[]')"
     needs: [languages]
