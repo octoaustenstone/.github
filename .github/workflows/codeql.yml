@@ -22,7 +22,6 @@ on:
     - cron: '22 20 * * 5'
 
 jobs:
-
   analyze:
     if: "!contains(needs.languages.outputs.languages, '[]')"
     needs: [languages]
