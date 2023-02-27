@@ -1,3 +1,3 @@
-# Octoaustenstone .github
+# Octoaustenstone `.github`
 
 Organization files
